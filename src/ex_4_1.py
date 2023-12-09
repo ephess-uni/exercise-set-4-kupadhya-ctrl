@@ -31,12 +31,10 @@ def num_shutdowns(logfile):
 
     # Iterate through the shutdown entries and count pairs of "Shutdown initiated" and "Shutdown complete"
     i = 0
-    while i < len(shutdown_entries):
-        if shutdown_entries[i] == "Shutdown initiated" and i + 1 < len(shutdown_entries) and shutdown_entries[i + 1] == "Shutdown complete":
+    while i < len(shutdown_entries) - 1:  # Ensure there is at least one more entry
+        if shutdown_entries[i] == "Shutdown initiated" and shutdown_entries[i + 1] == "Shutdown complete":
             num_shutdowns += 1
-            i += 2  # Move to the next pair
-        else:
-            i += 1  # Move to the next entry
+        i += 1
 
     return num_shutdowns
 
