@@ -1,44 +1,28 @@
-""" ex_4_1.py """
 import os
-
-try:
-    from src.ex_4_0 import get_shutdown_events
-    from src.util import get_data_file_path
-except ImportError:
-    from ex_4_0 import get_shutdown_events
-    from util import get_data_file_path
+from src.ex_4_0 import get_shutdown_events
+from src.ex_4_2 import logstamp_to_datetime
+from src.util import get_data_file_path
 
 # Use this FILENAME variable to test your function.
-FILENAME = get_data_file_path('messages.log')
-# >>>> DO NOT MODIFY CODE ABOVE <<<<
+FILENAME = get_data_file_path("messages.log")
 
-
-def num_shutdowns(logfile):
+def time_between_shutdowns(logfile):
     """
-    Counts and returns the number of shutdowns present in the file.
+    Calculate the time between the first and last shutdown events in the given log file.
 
-    Args:
-        logfile (str): The path to the log file.
+    Parameters:
+    - logfile (str): The path to the log file.
 
     Returns:
-        int: The number of shutdown events present in the file.
+    - timedelta: The time difference between the first and last shutdown events.
     """
-    # Use the get_shutdown_events function from ex_4_0 to get shutdown entries
-    shutdown_entries = get_shutdown_events(logfile)
+    shutdown_events = get_shutdown_events(logfile)
 
-    # Initialize a counter for the number of shutdown events
-    num_shutdowns = 0
+    timestamps = [logstamp_to_datetime(event.split()[1]) for event in shutdown_events]
 
-    # Iterate through the shutdown entries and count pairs of "Shutdown initiated" and "Shutdown complete"
-    i = 0
-    while i < len(shutdown_entries) - 1:  # Ensure there is at least one more entry
-        if shutdown_entries[i] == "Shutdown initiated" and shutdown_entries[i + 1] == "Shutdown complete":
-            num_shutdowns += 1
-        i += 1
+    return timestamps[-1] - timestamps[0]
 
-    return num_shutdowns
-
-
-# >>>> The code below will call your function and print the results
+# The code below will call your function and print the results
 if __name__ == "__main__":
-    print(f'{num_shutdowns(FILENAME)=}')
+    result = time_between_shutdowns(FILENAME)
+    print(f'Time between shutdowns: {result}')
